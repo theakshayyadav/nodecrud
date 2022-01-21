@@ -1,0 +1,147 @@
+<main>
+    <section class="container mt-5">
+        <div class="row">
+            <div class="col">
+                <label for="">Name <label id="msgname" style="color: red;"></label></label>
+                <input type="text" class="form-control" id="name" onkeyup="validatename()"
+                    placeholder="Enter your name">
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="">Email<label id="msgemail" style="color: red;"></label>
+                </label>
+                <input type="text" class="form-control" id="email" onkeyup="validateemail()"
+                    placeholder="Enter your email">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="">Mobile No
+                    <label id="msgmobileno" style="color: red;"></label>
+                </label>
+                <input type="text" class="form-control" id="mobileno" onkeyup="validatemobileno()"
+                    placeholder="Enter your mobile number">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="">City
+                    <label id="msgcity" style="color: red;"></label>
+                </label>
+                <input type="text" class="form-control" id="city" onkeyup="validatecity()"
+                    placeholder="Enter your city">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="save" class="btn btn-primary rounded-circle" onclick="submit()">SAVE</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+        function validatename() {
+            let name = $("#name").val();
+            if (name.trim() != "") {
+                $("#msgname").html("");
+            }
+        }
+        function validateemail() {
+            let email = $("#email").val();
+            if (email.trim() != "") {
+                $("#msgemail").html("");
+            }
+        }
+        function validatemobileno() {
+            let mobileno = $("#mobileno").val();
+            if (mobileno.trim() != "") {
+                $("#msgemail").html("");
+            }
+        }
+        function validatecity() {
+            let city = $("#city").val();
+            if (city.trim() != "") {
+                $("#city").html("");
+            }
+        }
+        function submit() {
+            let name = $("#name").val();
+            let email = $("#email").val();
+            let city = $("#city").val();
+            let mobileno = $("#mobileno").val();
+
+            let validated = true;
+            $("msgname").html("");
+            $("msgemail").html("");
+            $("msgcity").html("");
+            $("msgmobileno").html("");
+
+            if (name.trim() == "") {
+                $("#msgname").html("Enter name");
+                validated = false;
+            }
+            if (email.trim() == "") {
+                $("#msgemail").html("Enter email");
+                validated = false;
+            }
+            else {
+                if (emailvalidate(email) == false) {
+                    $("#msgemail").html("Enter valid email");
+                    validated = false;
+                }
+            }
+            if (city.trim() == "") {
+                $("#msgcity").html("Enter city");
+                validated = false;
+            }
+            if (mobileno.trim() == "") {
+                $("#msgmobileno").html("Enter mobile no");
+                validated = false;
+            }
+            else {
+                if (phonevalidate(mobileno) == false) {
+                    $("#msgmobileno").html("Enter valid mobile no");
+                    validated = false;
+                }
+            }
+            if (validated) {
+                // alert("form is ready to push in db");
+                let mydata = {
+                    data: {
+                        id: 0,
+                        name: name,
+                        email: email,
+                        mobileno: mobileno,
+                        city: city
+                    }
+                };
+                $.ajax({
+                    url: 'http://localhost:8081/save',
+                    type: 'post',
+                    data: mydata,
+                    dataType: "json",
+                    success: function (data) {
+                        window.location.href = "http://localhost:8081/";
+                    },
+                    error: function (err) {
+                        alert("error");
+                    }
+                });
+            }
+        }
+        function emailvalidate(email) {
+            var pattern = new RegExp(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/);
+            var result = pattern.test(email);
+            return result;
+        }
+
+        function phonevalidate(phone) {
+            var pattern = new RegExp(/^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/);
+            var result = pattern.test(phone);
+            return result;
+        }
+    </script>
+</main>
